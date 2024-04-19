@@ -1,7 +1,14 @@
-on: push
+name: Build
+
+on: 
+  push:
+
 jobs:
-  first-jobs:
+  first-job:
     runs-on: windows-latest
     steps:
-      -run: node --version
-      -run: npm --version
+      - name: Check Node.js version
+        run: node --version
+
+      - name: Check npm version
+        run: npm --version
