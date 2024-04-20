@@ -6,12 +6,17 @@ on:
   pull_request:
     branches:
       - main 
-jobs:
-  first-job:
-    runs-on: windows-latest
-    steps:
-      - name: Check Node.js version
-        run: node --version
+jobs: 
+deploy:
+name: Deploy
+runs-on: ubuntu-latest
+environment: production
 
-      - name: Check npm version
-        run: npm --version
+steps:
+- uses: actions/checkout@v2
+- name: Run a one-line script
+run: echo Hello, world!
+- name: Run a multi-line script
+run: |
+echo Add other actions to build,
+echo test, and deploy your project.
