@@ -1,14 +1,38 @@
 name: Build
-
-on: 
+on:
   push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  first-job:
-    runs-on: windows-latest
-    steps:
-      - name: Check Node.js version
-        run: node --version
+  build-and-test:
+    runs-on: ubuntu-latest
 
-      - name: Check npm version
-        run: npm --version
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+    - name: Build application
+      run: npm run build
+
+    - name: Deploy application
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "C:\Users\noboby\Desktop\hello-world-main\hello-world-main && git pull && npm install && pm2 restart all"
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: $SSH_PRIVATE_KEY
